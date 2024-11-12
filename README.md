@@ -14,8 +14,8 @@ npx cap sync
 <docgen-index>
 
 * [`echo(...)`](#echo)
-* [`readPassport(...)`](#readpassport)
 * [`configure(...)`](#configure)
+* [`readPassport(...)`](#readpassport)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -38,33 +38,48 @@ echo(options: { value: string; }) => Promise<{ value: string; }>
 --------------------
 
 
-### readPassport(...)
-
-```typescript
-readPassport(options: { accessKey: String; paceKeyReference: number; }) => Promise<void>
-```
-
-| Param         | Type                                                                                |
-| ------------- | ----------------------------------------------------------------------------------- |
-| **`options`** | <code>{ accessKey: <a href="#string">String</a>; paceKeyReference: number; }</code> |
-
---------------------
-
-
 ### configure(...)
 
 ```typescript
-configure(options: { apiKey: string; }) => Promise<void>
+configure(options: { apiKey: string; }) => Promise<EstadoLicencia>
 ```
 
 | Param         | Type                             |
 | ------------- | -------------------------------- |
 | **`options`** | <code>{ apiKey: string; }</code> |
 
+**Returns:** <code>Promise&lt;<a href="#estadolicencia">EstadoLicencia</a>&gt;</code>
+
+--------------------
+
+
+### readPassport(...)
+
+```typescript
+readPassport(options: { accessKey: String; paceKeyReference: number; }) => Promise<RespuestaReadPassport>
+```
+
+| Param         | Type                                                                                |
+| ------------- | ----------------------------------------------------------------------------------- |
+| **`options`** | <code>{ accessKey: <a href="#string">String</a>; paceKeyReference: number; }</code> |
+
+**Returns:** <code>Promise&lt;<a href="#respuestareadpassport">RespuestaReadPassport</a>&gt;</code>
+
 --------------------
 
 
 ### Interfaces
+
+
+#### EstadoLicencia
+
+| Prop                          | Type                                        |
+| ----------------------------- | ------------------------------------------- |
+| **`descripcion`**             | <code><a href="#string">String</a></code>   |
+| **`APIKeyValida`**            | <code><a href="#boolean">Boolean</a></code> |
+| **`lecturaDGHabilitada`**     | <code><a href="#boolean">Boolean</a></code> |
+| **`autenticacionHabilitada`** | <code><a href="#boolean">Boolean</a></code> |
+| **`firmaHabilitada`**         | <code><a href="#boolean">Boolean</a></code> |
 
 
 #### String
@@ -113,15 +128,15 @@ Allows manipulation and formatting of text strings and determination and locatio
 | Prop             | Type                 | Description                                                                                                                                                          |
 | ---------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`source`**     | <code>string</code>  | Returns a copy of the text of the regular expression pattern. Read-only. The regExp argument is a Regular expression object. It can be a variable name or a literal. |
-| **`global`**     | <code>boolean</code> | Returns a Boolean value indicating the state of the global flag (g) used with a regular expression. Default is false. Read-only.                                     |
-| **`ignoreCase`** | <code>boolean</code> | Returns a Boolean value indicating the state of the ignoreCase flag (i) used with a regular expression. Default is false. Read-only.                                 |
-| **`multiline`**  | <code>boolean</code> | Returns a Boolean value indicating the state of the multiline flag (m) used with a regular expression. Default is false. Read-only.                                  |
+| **`global`**     | <code>boolean</code> | Returns a <a href="#boolean">Boolean</a> value indicating the state of the global flag (g) used with a regular expression. Default is false. Read-only.              |
+| **`ignoreCase`** | <code>boolean</code> | Returns a <a href="#boolean">Boolean</a> value indicating the state of the ignoreCase flag (i) used with a regular expression. Default is false. Read-only.          |
+| **`multiline`**  | <code>boolean</code> | Returns a <a href="#boolean">Boolean</a> value indicating the state of the multiline flag (m) used with a regular expression. Default is false. Read-only.           |
 | **`lastIndex`**  | <code>number</code>  |                                                                                                                                                                      |
 
 | Method      | Signature                                                                     | Description                                                                                                                   |
 | ----------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | **exec**    | (string: string) =&gt; <a href="#regexpexecarray">RegExpExecArray</a> \| null | Executes a search on a string using a regular expression pattern, and returns an array containing the results of that search. |
-| **test**    | (string: string) =&gt; boolean                                                | Returns a Boolean value that indicates whether or not a pattern exists in a searched string.                                  |
+| **test**    | (string: string) =&gt; boolean                                                | Returns a <a href="#boolean">Boolean</a> value that indicates whether or not a pattern exists in a searched string.           |
 | **compile** | () =&gt; this                                                                 |                                                                                                                               |
 
 
@@ -131,5 +146,95 @@ Allows manipulation and formatting of text strings and determination and locatio
 | ----------- | ------------------- |
 | **`index`** | <code>number</code> |
 | **`input`** | <code>string</code> |
+
+
+#### Boolean
+
+| Method      | Signature        | Description                                          |
+| ----------- | ---------------- | ---------------------------------------------------- |
+| **valueOf** | () =&gt; boolean | Returns the primitive value of the specified object. |
+
+
+#### RespuestaReadPassport
+
+| Prop            | Type                                            |
+| --------------- | ----------------------------------------------- |
+| **`datosDNIe`** | <code><a href="#datosdnie">DatosDNIe</a></code> |
+| **`error`**     | <code><a href="#string">String</a></code>       |
+
+
+#### DatosDNIe
+
+| Prop                           | Type                                                          |
+| ------------------------------ | ------------------------------------------------------------- |
+| **`nif`**                      | <code><a href="#string">String</a></code>                     |
+| **`nombreCompleto`**           | <code><a href="#string">String</a></code>                     |
+| **`nombre`**                   | <code><a href="#string">String</a></code>                     |
+| **`apellido1`**                | <code><a href="#string">String</a></code>                     |
+| **`apellido2`**                | <code><a href="#string">String</a></code>                     |
+| **`firma`**                    | <code><a href="#string">String</a></code>                     |
+| **`imagen`**                   | <code><a href="#string">String</a></code>                     |
+| **`fechaNacimiento`**          | <code><a href="#string">String</a></code>                     |
+| **`provinciaNacimiento`**      | <code><a href="#string">String</a></code>                     |
+| **`municipioNacimiento`**      | <code><a href="#string">String</a></code>                     |
+| **`nombrePadre`**              | <code><a href="#string">String</a></code>                     |
+| **`nombreMadre`**              | <code><a href="#string">String</a></code>                     |
+| **`fechaValidez`**             | <code><a href="#string">String</a></code>                     |
+| **`emisor`**                   | <code><a href="#string">String</a></code>                     |
+| **`nacionalidad`**             | <code><a href="#string">String</a></code>                     |
+| **`sexo`**                     | <code><a href="#string">String</a></code>                     |
+| **`direccion`**                | <code><a href="#string">String</a></code>                     |
+| **`provinciaActual`**          | <code><a href="#string">String</a></code>                     |
+| **`municipioActual`**          | <code><a href="#string">String</a></code>                     |
+| **`numSoporte`**               | <code><a href="#string">String</a></code>                     |
+| **`certificadoAutenticacion`** | <code><a href="#datoscertificado">DatosCertificado</a></code> |
+| **`certificadoFirma`**         | <code><a href="#datoscertificado">DatosCertificado</a></code> |
+| **`certificadoCA`**            | <code><a href="#datoscertificado">DatosCertificado</a></code> |
+| **`integridadDocumento`**      | <code><a href="#boolean">Boolean</a></code>                   |
+| **`pemCertificadoFirmaSOD`**   | <code><a href="#string">String</a></code>                     |
+| **`datosICAO`**                | <code><a href="#datosicao">DatosICAO</a></code>               |
+| **`can`**                      | <code><a href="#string">String</a></code>                     |
+| **`erroresVerificacion`**      | <code>[String]</code>                                         |
+
+
+#### DatosCertificado
+
+| Prop                         | Type                                      |
+| ---------------------------- | ----------------------------------------- |
+| **`nif`**                    | <code><a href="#string">String</a></code> |
+| **`nombre`**                 | <code><a href="#string">String</a></code> |
+| **`apellidos`**              | <code><a href="#string">String</a></code> |
+| **`fechaNacimiento`**        | <code><a href="#string">String</a></code> |
+| **`tipo`**                   | <code><a href="#string">String</a></code> |
+| **`nifRepresentante`**       | <code><a href="#string">String</a></code> |
+| **`nombreRepresentante`**    | <code><a href="#string">String</a></code> |
+| **`apellidosRepresentante`** | <code><a href="#string">String</a></code> |
+| **`fechaInicioValidez`**     | <code><a href="#string">String</a></code> |
+| **`fechaFinValidez`**        | <code><a href="#string">String</a></code> |
+| **`estado`**                 | <code><a href="#number">Number</a></code> |
+| **`email`**                  | <code><a href="#string">String</a></code> |
+
+
+#### Number
+
+An object that represents a number of any kind. All JavaScript numbers are 64-bit floating-point numbers.
+
+| Method            | Signature                                           | Description                                                                                                                       |
+| ----------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **toString**      | (radix?: number \| undefined) =&gt; string          | Returns a string representation of an object.                                                                                     |
+| **toFixed**       | (fractionDigits?: number \| undefined) =&gt; string | Returns a string representing a number in fixed-point notation.                                                                   |
+| **toExponential** | (fractionDigits?: number \| undefined) =&gt; string | Returns a string containing a number represented in exponential notation.                                                         |
+| **toPrecision**   | (precision?: number \| undefined) =&gt; string      | Returns a string containing a number represented either in exponential or fixed-point notation with a specified number of digits. |
+| **valueOf**       | () =&gt; number                                     | Returns the primitive value of the specified object.                                                                              |
+
+
+#### DatosICAO
+
+| Prop       | Type                                      |
+| ---------- | ----------------------------------------- |
+| **`DG1`**  | <code><a href="#string">String</a></code> |
+| **`DG2`**  | <code><a href="#string">String</a></code> |
+| **`DG13`** | <code><a href="#string">String</a></code> |
+| **`SOD`**  | <code><a href="#string">String</a></code> |
 
 </docgen-api>
