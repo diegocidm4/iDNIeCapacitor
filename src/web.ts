@@ -1,113 +1,55 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { EstadoLicencia, idniecapPlugin, RespuestaReadPassport, DatosDNIe } from './definitions';
+import type { EstadoLicencia, idniecapPlugin, MRZKey, RespuestaFirma, RespuestaReadPassport } from './definitions';
 
 export class idniecapWeb extends WebPlugin implements idniecapPlugin {
+  getMRZKey(options: {passportNumber: String, dateOfBirth: String, dateOfExpiry: String}): Promise<MRZKey> {
+    console.log("NOT IMPLEMENTED");
+    console.log(options);
+    throw new Error('Method not implemented.');
+  }
   //async configure(options: { apiKey: String }): Promise<{ estadoLicencia: EstadoLicencia }> {
   async configure(options: { apiKey: String }): Promise<EstadoLicencia> {
     console.log("NOT IMPLEMENTED");
     console.log(options);
-    var estado: EstadoLicencia = {
-      descripcion: '',
-      APIKeyValida: false,
-      lecturaDGHabilitada: false,
-      autenticacionHabilitada: false,
-      firmaHabilitada: false
-    };
-    return estado;
+    throw new Error('Method not implemented.');
   }
-  async readPassport(options: {accessKey: String, paceKeyReference: number}): Promise<RespuestaReadPassport> {
-  //  async readPassport(options: {accessKey: String, paceKeyReference: number}, callback: MyPluginCallback): Promise<CallbackID> {
+  async readPassport(options: {accessKey: String, paceKeyReference: number, tags: String[]}): Promise<RespuestaReadPassport> {
     console.log("NOT IMPLEMENTED");
     console.log(options);
-
-    var datosDNIe: DatosDNIe = {
-      nif: '',
-      nombreCompleto: '',
-      nombre: '',
-      apellido1: '',
-      apellido2: '',
-      firma: '',
-      imagen: '', 
-      fechaNacimiento: '',
-      provinciaNacimiento: '',
-      municipioNacimiento: '',
-      nombrePadre: '',
-      nombreMadre: '',
-      fechaValidez: '',
-      emisor: '',
-      nacionalidad: '',
-      sexo: '',
-      direccion: '',
-      provinciaActual: '',
-      municipioActual: '',
-      numSoporte: '',
-      certificadoAutenticacion: {
-        nif: "",
-        nombre: "",
-        apellidos: "",
-        fechaNacimiento: "",
-        tipo: "",
-        nifRepresentante: "",
-        nombreRepresentante: "",
-        apellidosRepresentante: "",
-        fechaInicioValidez: "",
-        fechaFinValidez: "",
-        estado: 0,
-        email: ""
-      },
-      certificadoFirma: {
-        nif: "",
-        nombre: "",
-        apellidos: "",
-        fechaNacimiento: "",
-        tipo: "",
-        nifRepresentante: "",
-        nombreRepresentante: "",
-        apellidosRepresentante: "",
-        fechaInicioValidez: "",
-        fechaFinValidez: "",
-        estado: 0,
-        email: ""
-      },
-      certificadoCA: {
-        nif: "",
-        nombre: "",
-        apellidos: "",
-        fechaNacimiento: "",
-        tipo: "",
-        nifRepresentante: "",
-        nombreRepresentante: "",
-        apellidosRepresentante: "",
-        fechaInicioValidez: "",
-        fechaFinValidez: "",
-        estado: 0,
-        email: ""
-      },
-      integridadDocumento: false,
-      pemCertificadoFirmaSOD: '',
-      datosICAO: {
-        DG1: "",
-        DG2: "",
-        DG13: "",
-        SOD: ""
-      },
-      can: '',
-      erroresVerificacion: ['']
-    }
-
-    var respuesta: RespuestaReadPassport =
-    {
-      datosDNIe: datosDNIe,
-      error: undefined
-    }
-
-
-    return respuesta;
+    throw new Error('Method not implemented.');
   }
-    
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+
+  async signTextDNIe(options: {accessKey: String, pin: String, datosFirma: String, certToUse: String}) : Promise<RespuestaFirma>{
+    console.log("NOT IMPLEMENTED");
+    console.log(options);
+    throw new Error('Method not implemented.');
   }
+
+  async signDocumentDNIe(options: {accessKey: String, pin: String, document: String, certToUse: String}) : Promise<RespuestaFirma>{
+    console.log("NOT IMPLEMENTED");
+    console.log(options);
+    throw new Error('Method not implemented.');
+  }
+
+  async signHashDNIe(options: {accessKey: String, pin: String, hash: Array<Number>, digest: number, certToUse: String}) : Promise<RespuestaFirma>
+  {
+    console.log("NOT IMPLEMENTED");
+    console.log(options);
+    throw new Error('Method not implemented.');
+  }
+ /*
+  async authenticationDNIeOpenSession(options: {accessKey: String, pin: String}) : Promise<RespuestaAutenticacion>
+  {
+    console.log("NOT IMPLEMENTED");
+    console.log(options);
+    throw new Error('Method not implemented.');
+  }
+
+  async signChallengeDNIe(options: {hash: Array<Number>, digest: Number, signPadding: String}) : Promise<RespuestaAutenticacion>{
+    console.log("NOT IMPLEMENTED");
+    console.log(options);
+    throw new Error('Method not implemented.');
+  }
+ */   
 }

@@ -11,23 +11,21 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
     public let identifier = "idniecapPlugin"
     public let jsName = "idniecap"
     public let pluginMethods: [CAPPluginMethod] = [
-        CAPPluginMethod(name: "echo", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "configure", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getMRZKey", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "readPassport", returnType: CAPPluginReturnPromise),
-        //CAPPluginMethod(name: "readPassport", returnType: CAPPluginReturnCallback),
+        CAPPluginMethod(name: "signTextDNIe", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "signDocumentDNIe", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "signHashDNIe", returnType: CAPPluginReturnPromise),
+//        CAPPluginMethod(name: "authenticationDNIeOpenSession", returnType: CAPPluginReturnPromise),
+//        CAPPluginMethod(name: "signChallengeDNIe", returnType: CAPPluginReturnPromise),
     ]
     private let implementation = idniecap()
 
     private var passportReader: PassportReader? = nil
     private var passportSelected: NFCPassportModel? = nil
+    private var nfcActivo: Bool = false
     
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
-    }
-
     @objc func configure(_ call: CAPPluginCall) {
         let apiKey = call.getString("apiKey") ?? ""
 
@@ -40,6 +38,19 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
         json["autenticacionHabilitada"] = resultado.autenticacionHabilitada
         json["firmaHabilitada"] = resultado.firmaHabilitada
         
+        call.resolve(json)
+    }
+
+    @objc func getMRZKey(_ call: CAPPluginCall) {
+        let passportNumber = call.getString("passportNumber") ?? ""
+        let dateOfBirth = call.getString("dateOfBirth") ?? ""
+        let dateOfExpiry = call.getString("dateOfExpiry") ?? ""
+
+        let passportUtils = PassportUtils()
+        let mrzKey = passportUtils.getMRZKey( passportNumber: passportNumber, dateOfBirth: dateOfBirth, dateOfExpiry: dateOfExpiry)
+        
+        var json: [String: Any] = [:]
+        json["mrzKey"] = mrzKey
         call.resolve(json)
     }
 
@@ -61,7 +72,77 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
 
         }
         
+        let tags = call.getArray("tags") ?? []
+        
+        var selectedTags: [DataGroupId] = []
+        
+        for tag in tags{
+            guard let strTag = tag as! String?
+            else {continue}
+            
+            switch (strTag)
+            {
+            case "COM":
+                selectedTags.append(.COM)
+                break
+            case "DG1":
+                selectedTags.append(.DG1)
+                break
+            case "DG2":
+                selectedTags.append(.DG2)
+                break
+            case "DG3":
+                selectedTags.append(.DG3)
+                break
+            case "DG4":
+                selectedTags.append(.DG4)
+                break
+            case "DG5":
+                selectedTags.append(.DG5)
+                break
+            case "DG6":
+                selectedTags.append(.DG6)
+                break
+            case "DG7":
+                selectedTags.append(.DG7)
+                break
+            case "DG8":
+                selectedTags.append(.DG8)
+                break
+            case "DG9":
+                selectedTags.append(.DG9)
+                break
+            case "DG10":
+                selectedTags.append(.DG10)
+                break
+            case "DG11":
+                selectedTags.append(.DG11)
+                break
+            case "DG12":
+                selectedTags.append(.DG12)
+                break
+            case "DG13":
+                selectedTags.append(.DG13)
+                break
+            case "DG14":
+                selectedTags.append(.DG14)
+                break
+            case "DG15":
+                selectedTags.append(.DG15)
+                break
+            case "DG16":
+                selectedTags.append(.DG16)
+                break
+            case "SOD":
+                selectedTags.append(.SOD)
+                break
+            default:
+                break
+            }
+        }
+        
         passportReader = PassportReader()
+        nfcActivo = false
         
         let passportUtils = PassportUtils()
         passportReader?.passiveAuthenticationUsesOpenSSL = true
@@ -70,7 +151,7 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
         var datosDNIe: DatosDNIe? = nil;
         var errorText: String? = nil;
         
-        passportReader?.readPassport(accessKey: accessKey, paceKeyReference: paceReference, tags: [], skipSecureElements: true, customDisplayMessage: { (displayMessage) in  return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
+        passportReader?.readPassport(accessKey: accessKey, paceKeyReference: paceReference, tags: selectedTags, skipSecureElements: true, customDisplayMessage: { (displayMessage) in  return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
         }, completed: { (passport, error) in
             if let passport = passport {
                 datosDNIe = DNIeUtils.obtenerTodosDatosDNIe(dnie: passport)
@@ -366,4 +447,321 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve(json)
     }
 
+    @objc func signTextDNIe(_ call: CAPPluginCall) {
+        let accessKey = call.getString("accessKey") ?? ""
+        let pin = call.getString("pin") ?? ""
+        let datosFirma = call.getString("datosFirma") ?? ""
+        let certToUse = call.getString("certToUse") ?? ""
+        
+        var errorText: String? = nil
+        var firma: String? = nil
+        var certificado: String? = nil
+        
+        var certificate: DNIeCertificates = DNIeCertificates.FIRMA
+        
+        if(certToUse == "AUTENTICACION")
+        {
+            certificate = DNIeCertificates.AUTENTICACION
+        }
+            
+        var lecturaCompleta = false;
+        nfcActivo = false
+        // Set whether to use the new Passive Authentication verification method (default true) or the old OpenSSL CMS verifiction
+        if(passportReader == nil)
+        {
+            errorText = "Error. No se ha leído previamente un DNIe"
+        }
+        else
+        {
+            passportReader?.passiveAuthenticationUsesOpenSSL = true
+            
+            passportReader?.signTextDNIe(accessKey: accessKey, pin: pin, datosFirma: datosFirma, certToUse: certificate, passport: passportSelected, paceKeyReference: PACEHandler.CAN_PACE_KEY_REFERENCE, tags: [], skipSecureElements: true, customDisplayMessage: { (displayMessage) in
+                return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
+            }, completed: { (passport, error) in
+                if let passport = passport {
+                    let datosFirmados: String = binToHexRep(passport.signedMessage!)
+                    firma = datosFirmados
+                } else {
+                    errorText = "Error. No se ha podido realizar la firma"
+                }
+                lecturaCompleta = true
+            })
+        }
+        
+         while(!lecturaCompleta)
+         {
+             
+         }
+
+        var json: [String: Any] = [:]
+        json["firma"] = firma
+        json["error"] = errorText
+        
+        call.resolve(json)
+        
+    }
+
+    @objc func signDocumentDNIe(_ call: CAPPluginCall) {
+        let accessKey = call.getString("accessKey") ?? ""
+        let pin = call.getString("pin") ?? ""
+        let document = call.getString("document") ?? ""
+        let certToUse = call.getString("certToUse") ?? ""
+        var paceReference = PACEHandler.CAN_PACE_KEY_REFERENCE
+        var lecturaCompleta = false;
+
+        var errorText: String? = nil
+        var firma: String? = nil
+        var certificado: String? = nil
+
+        var certificate: DNIeCertificates = DNIeCertificates.FIRMA
+        if(certToUse == "AUTENTICACION")
+        {
+            certificate = DNIeCertificates.AUTENTICACION
+        }
+        
+        let documentoUrl: URL = URL(string: document)!
+        
+        nfcActivo = false
+        if(passportReader == nil)
+        {
+            errorText = "Error. No se ha leído previamente un DNIe"
+        }
+        else
+        {
+            passportReader?.signDocumentDNIe(accessKey: accessKey, pin: pin, document: documentoUrl, certToUse: DNIeCertificates.FIRMA, passport: passportSelected, paceKeyReference: paceReference, tags: [], skipSecureElements: true, customDisplayMessage: { (displayMessage) in
+                return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
+            }, completed: { (passport, error) in
+                if let passport = passport {
+                    let datosFirmados: String = binToHexRep(passport.signedMessage!)
+                    firma = datosFirmados
+                } else {
+                    errorText = error?.localizedDescription
+                }
+                lecturaCompleta = true
+            })
+        }
+         while(!lecturaCompleta)
+         {
+             
+         }
+
+        var json: [String: Any] = [:]
+        json["firma"] = firma
+        json["error"] = errorText
+        
+        call.resolve(json)
+    }
+
+    @objc func signHashDNIe(_ call: CAPPluginCall) {
+        let accessKey = call.getString("accessKey") ?? ""
+        let pin = call.getString("pin") ?? ""
+//        let hash = call.getString("hash") ?? ""
+        let hash = call.getArray("hash") ?? []
+        let digest = call.getInt("digest") ?? 0
+        let certToUse = call.getString("certToUse") ?? ""
+        
+        var errorText: String? = nil
+        var firma: String? = nil
+        var certificado: String? = nil
+        
+        
+        var hashUInt: [UInt8] = []
+        for h in hash
+        {
+            hashUInt.append(h as! UInt8)
+        }
+        
+        var certificate: DNIeCertificates = DNIeCertificates.FIRMA
+        if(certToUse == "AUTENTICACION")
+        {
+            certificate = DNIeCertificates.AUTENTICACION
+        }
+                    
+        var digestHeader = NFCUtils.SHA256_DIGESTINFO_HEADER
+        switch digest
+        {
+        case 1:
+            digestHeader = NFCUtils.SHA1_DIGESTINFO_HEADER
+            break
+        case 224:
+            digestHeader = NFCUtils.SHA224_DIGESTINFO_HEADER
+            break
+        case 256:
+            digestHeader = NFCUtils.SHA256_DIGESTINFO_HEADER
+            break
+        case 384:
+            digestHeader = NFCUtils.SHA384_DIGESTINFO_HEADER
+            break
+        case 512:
+            digestHeader = NFCUtils.SHA512_DIGESTINFO_HEADER
+            break
+        default:
+            digestHeader = NFCUtils.SHA256_DIGESTINFO_HEADER
+            break
+        }
+        
+        var lecturaCompleta = false
+        nfcActivo = false
+        if(passportReader == nil)
+        {
+            errorText = "Error. No se ha leído previamente un DNIe"
+        }
+        else
+        {
+            
+            passportReader?.signHashDNIe(accessKey: accessKey, pin: pin, hash: hashUInt, digest: digestHeader, certToUse: certificate, passport: passportSelected, paceKeyReference: PACEHandler.CAN_PACE_KEY_REFERENCE, tags: [], skipSecureElements: true, customDisplayMessage: { (displayMessage) in
+                return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
+            }, operacion: .FIRMA_DOCUMENTO, completed: { (passport, error) in
+                if let passport = passport {
+                    let datosFirmados: String = binToHexRep(passport.signedMessage!)
+                    firma = datosFirmados
+                } else {
+                    errorText = error?.localizedDescription ?? "Error no especificado"
+                }
+                lecturaCompleta = true
+            })
+            
+        }
+         while(!lecturaCompleta)
+         {
+             
+         }
+
+        var json: [String: Any] = [:]
+        json["firma"] = firma
+        json["error"] = errorText
+        
+        call.resolve(json)
+    }
+/*
+    @objc func authenticationDNIeOpenSession(_ call: CAPPluginCall) {
+        
+        let accessKey = call.getString("accessKey") ?? ""
+        let pin = call.getString("pin") ?? ""
+        var paceReference = PACEHandler.CAN_PACE_KEY_REFERENCE
+        
+        var lecturaCompleta = false
+        var errorText: String? = nil
+        var respuesta: String? = nil
+
+        nfcActivo = false
+        if(passportReader == nil)
+        {
+            errorText = "Error. No se ha leído previamente un DNIe"
+        }
+        else
+        {
+            
+            passportReader?.authenticationDNIeOpenSession(accessKey: accessKey, pin: pin, passport: passportSelected, paceKeyReference: PACEHandler.CAN_PACE_KEY_REFERENCE, tags: [], skipSecureElements: true, customDisplayMessage: { (displayMessage) in
+                return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
+            }, completed: { (pass, error) in
+                if let pass = pass {
+                    self.nfcActivo = true
+                    self.passportSelected = pass
+                    respuesta = "Proceso terminado correctamente"
+                } else {
+                    self.nfcActivo = false
+                    errorText = "Se ha producido un error en el proceso \(error)"
+                }
+                lecturaCompleta = true
+            })
+        }
+        
+         while(!lecturaCompleta)
+         {
+             
+         }
+
+        var json: [String: Any] = [:]
+        json["respuesta"] = respuesta
+        json["error"] = errorText
+        
+        call.resolve(json)
+    }
+
+    @objc func signChallengeDNIe(_ call: CAPPluginCall) {
+        let hash = call.getArray("hash") ?? []
+        let digest = call.getInt("digest") ?? 0
+        let signPadding = call.getString("signPadding") ?? ""
+
+        var hashUInt: [UInt8] = []
+        for h in hash
+        {
+            hashUInt.append(h as! UInt8)
+        }
+        
+        
+        var selSignPadding: DNIeSingPadding = DNIeSingPadding.PKCS
+        if(signPadding == "PSS")
+        {
+            selSignPadding = DNIeSingPadding.PSS
+        }
+                    
+        var digestHeader = NFCUtils.SHA256_DIGESTINFO_HEADER
+        switch digest
+        {
+        case 1:
+            digestHeader = NFCUtils.SHA1_DIGESTINFO_HEADER
+            break
+        case 224:
+            digestHeader = NFCUtils.SHA224_DIGESTINFO_HEADER
+            break
+        case 256:
+            digestHeader = NFCUtils.SHA256_DIGESTINFO_HEADER
+            break
+        case 384:
+            digestHeader = NFCUtils.SHA384_DIGESTINFO_HEADER
+            break
+        case 512:
+            digestHeader = NFCUtils.SHA512_DIGESTINFO_HEADER
+            break
+        default:
+            digestHeader = NFCUtils.SHA256_DIGESTINFO_HEADER
+            break
+        }
+
+        var lecturaCompleta = false
+        var errorText: String? = nil
+        var respuesta: String? = nil
+
+        passportReader?.signChallengeDNIe(hash: hashUInt, digest: digestHeader, signPadding: selSignPadding, passport: passportSelected, paceKeyReference: PACEHandler.CAN_PACE_KEY_REFERENCE, customDisplayMessage: { (displayMessage) in
+            return NFCUtils.customDisplayMessage(displayMessage: displayMessage)
+        }, completed: { (passport, error) in
+            self.nfcActivo = false
+            if let passport = passport {
+/*
+                if let userDefaults = UserDefaults(suiteName: Variables.APP_GROUP) {
+                        userDefaults.setValue(Data(passport.signedMessage!), forKey: "signedData")
+                        if(Tramite.bloqueaPeticionesFirma)
+                        {
+                            userDefaults.setValue(true, forKey: "cancelSignature")
+                        }
+                        respuesta = "Proceso terminado correctamente"
+                        self.dismiss(animated: true)
+                    }
+*/
+                respuesta = "Proceso terminado correctamente"
+            } else {
+                var descripcion = ""
+                if(error != nil)
+                {
+                    descripcion = error!.localizedDescription
+                }
+                errorText =  "Autenticación fallida. \(descripcion)"
+            }
+        })
+
+        
+         while(!lecturaCompleta)
+         {
+             
+         }
+
+        var json: [String: Any] = [:]
+        json["respuesta"] = respuesta
+        json["error"] = errorText
+        
+        call.resolve(json)
+    }
+*/
 }
