@@ -1,7 +1,7 @@
 {
   "name": "idniecap",
-  "version": "0.0.2",
-  "description": "Librería basada en Swift para el uso del DNIe en ionic. Sólo disponible para iOS.",
+  "version": "1.0.0",
+  "description": "Librería para el uso del DNIe en ionic. Disponible para android e iOS.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",

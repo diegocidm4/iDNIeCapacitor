@@ -1,6 +1,6 @@
 # idniecap
 
-Librería basada en Swift para el uso del DNIe en ionic
+Librería para el uso del DNIe en ionic. Disponible para android e iOS.
 
 ## Install
 

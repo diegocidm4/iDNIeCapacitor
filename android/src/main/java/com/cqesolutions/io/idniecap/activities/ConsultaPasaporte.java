@@ -395,10 +395,6 @@ public class ConsultaPasaporte extends AppCompatActivity implements NfcAdapter.R
                 _resultInfo.setText(extra);
             }else
                 _resultInfo.setVisibility(View.GONE);
-            if(muestraDatos)
-            {
-                respuestaPlugin(datosDnie, datosCertificado, passiveAuthResult);
-            }
         });
     }
 
@@ -422,6 +418,7 @@ public class ConsultaPasaporte extends AppCompatActivity implements NfcAdapter.R
         Intent data = new Intent();
         data.putExtra("datosDNIe", datosDnie);
         data.putExtra("certificadoCA", datosCertificado);
+        data.putExtra("integridadDocumento", passiveAuthResult);
         setResult(RESULT_OK, data);
         finish();
 

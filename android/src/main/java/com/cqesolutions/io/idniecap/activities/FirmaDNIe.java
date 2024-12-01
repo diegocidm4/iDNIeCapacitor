@@ -31,6 +31,7 @@ import com.cqesolutions.io.idniecap.utils.DnieKeyStoreUtils;
 import com.cqesolutions.io.idniecap.utils.dniedroid.Common;
 import com.cqesolutions.io.idniecap.utils.pki.Tool;
 
+import java.security.DigestException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -42,6 +43,10 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import de.tsenger.androsmex.data.CANSpecDO;
 import es.gob.fnmt.dniedroid.gui.PasswordUI;
@@ -74,6 +79,8 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
     private String datosFirma = null;
     private String certToUse = null;
 
+    private byte[] hashFirma = null;
+    private int digest = 256;
     //Acceso a FNMT
     private ProgressDialog dialog;
 
@@ -96,11 +103,32 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
 
         _can = (String) getIntent().getExtras().get("CAN");
         pin = (String) getIntent().getExtras().get("pin");
-        datosFirma = (String) getIntent().getExtras().get("datosFirma");
         certToUse = (String) getIntent().getExtras().get("certToUse");
 
-        //        PasswordUI.setAppContext(this);
-//        PasswordUI.setPasswordDialog(null);//Diálogo de petición de contraseña por defecto
+        if(getIntent().getExtras().containsKey("datosFirma")) {
+            datosFirma = (String) getIntent().getExtras().get("datosFirma");
+        }
+        else
+        {
+            datosFirma = null;
+        }
+
+        if(getIntent().getExtras().containsKey("hashFirma")) {
+            hashFirma = (byte[]) getIntent().getExtras().get("hashFirma");
+        }
+        else
+        {
+            hashFirma = null;
+        }
+
+        if(getIntent().getExtras().containsKey("digest")) {
+            digest = (int) getIntent().getExtras().get("digest");
+        }
+        else
+        {
+            digest = 256;
+        }
+
 
         MyPasswordDialog myPasswordDialog = new MyPasswordDialog(this, true, pin.toCharArray());
         PasswordUI.setPasswordDialog(myPasswordDialog); //Establecemos nuestro propio diálogo de petición de PIN.
@@ -136,12 +164,13 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
             keyStoreDNIe = keyStore;
 
             recuperaCertificados();
-
+/*
             //Leyendo datos públicos
             updateInfo("Leyendo datos", "Obteniendo datos del DNIe...");
             MrtdCard mrtdCardInfo = initInfo.getMrtdCardInfo();
             DnieKeyStoreUtils dnieKeyStoreUtils = new DnieKeyStoreUtils(mrtdCardInfo);
             datosDnie = dnieKeyStoreUtils.obtenerDatosDNIe(true, false, false);
+ */
             updateInfo("Leyendo datos", "Firmando datos...", false, true);
 
         } catch (Exception e) {
@@ -249,7 +278,7 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
 
             if(firmaDatos)
             {
-                firmaDatos(datosFirma, certToUse);
+                firmaDatos();
             }
         });
     }
@@ -287,10 +316,10 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
 
     }
 
-    public void firmaDatos(String datosFirma, String certToUse)
+    public void firmaDatos()
     {
         _executor.execute(() -> {
-            byte[] resultado = doInBackground(datosFirma, certToUse);
+            byte[] resultado = doInBackground();
             _handler.post(() -> {
                 Intent data = new Intent();
                 if(resultado != null)
@@ -311,7 +340,7 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
         });
     }
 
-    public byte[] doInBackground(String datosFirma, String certToUse){
+    public byte[] doInBackground(){
         byte[] resultado = null;
         try {
             String certAlias = DnieProvider.SIGN_CERT_ALIAS;
@@ -320,10 +349,18 @@ public class FirmaDNIe extends AppCompatActivity implements NfcAdapter.ReaderCal
                 certAlias = DnieProvider.AUTH_CERT_ALIAS;
             }
             final PrivateKey privateKey = (PrivateKey) keyStoreDNIe.getKey(certAlias, pin.toCharArray());
-            byte[] _signature = Common.getSignature(privateKey,datosFirma);
-            resultado = _signature;
+
+            if(datosFirma != null) {
+                resultado = Common.getSignature(privateKey, datosFirma);
+            }
+            else if(hashFirma != null)
+            {
+                resultado = Common.getSignature(privateKey, hashFirma, digest);
+            }
+
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException |
-                 UnrecoverableKeyException | KeyStoreException e) {
+                 UnrecoverableKeyException | KeyStoreException | NoSuchPaddingException |
+                IllegalBlockSizeException | BadPaddingException | DigestException e) {
             resultado = null;
         }
 

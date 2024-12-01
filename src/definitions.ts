@@ -13,7 +13,7 @@ export interface idniecapPlugin {
   
   /**
    * Lee el eID utilizando la conexión NFC.
-   * @param options - Array que incluye los parámetros que se le envían al plugin: accessKey (Indica el can o mrz utilizado para establecer la comunicación), paceKeyReference (indica el tipo de clave usada en la conexión, se puede utilizar CAN o MRZ), tags (indica los dataGroups a leer del documento. [] para leer todos)
+   * @param options - Array que incluye los parámetros que se le envían al plugin: accessKey (Indica el can o mrz utilizado para establecer la comunicación), paceKeyReference (indica el tipo de clave usada en la conexión, se puede utilizar CAN o MRZ), tags (indica los dataGroups a leer del documento. [] para leer todos. En android si no se especifica DG2 no se recupera la foto y si no se especifica DG7 no se recupera la firma, el resto de DGs se recuperan siempre)
    */
   readPassport(options: {accessKey: String, paceKeyReference: number, tags: String[]}) : Promise<RespuestaReadPassport>;
 
@@ -34,19 +34,7 @@ export interface idniecapPlugin {
    * @param options - Array que incluye los parámetros que se le envían al plugin: accessKey (Indica el can utilizado para establecer la comunicación), pin (indica pin del DNIe), hash (hash a firmar), digest (digest del algoritmo utilizado para generar el hash. Se indica uno de los valores del tipo DigestType), certToUse (certificado a usar. Se indica uno de los valores del tipo DNIeCertificates)
    */
   signHashDNIe(options: {accessKey: String, pin: String, hash: Array<Number>, digest: number, certToUse: String}) : Promise<RespuestaFirma>;
-/*
-  **
-   * Establece los canales de conexión necesarios para realizar operaciones de autenticación con el DNIe dejándolos abiertos a la espera de la petición de firma.
-   * @param options - Array que incluye los parámetros que se le envían al plugin: accessKey (Indica el can utilizado para establecer la comunicación), pin (indica pin del DNIe)
-   *
-  authenticationDNIeOpenSession(options: {accessKey: String, pin: String}) : Promise<RespuestaAutenticacion>;
 
-  **
-   * Establece los canales de conexión necesarios para realizar operaciones de autenticación con el DNIe dejándolos abiertos a la espera de la petición de firma.
-   * @param options - Array que incluye los parámetros que se le envían al plugin: hash (hash a firmar), digest (digest del algoritmo utilizado para generar el hash. Se indica uno de los valores del tipo DigestType), signPadding (indica el padding a utilizar en la firma del hash. Se indica uno de los valores del tipo DNIeSingPadding)
-   *
-  signChallengeDNIe(options: {hash: Array<Number>, digest: Number, signPadding: String}) : Promise<RespuestaAutenticacion>;
-*/
 }
 
 export const PACEHandler =  { 
