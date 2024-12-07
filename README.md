@@ -19,6 +19,7 @@ npx cap sync
 * [`signTextDNIe(...)`](#signtextdnie)
 * [`signDocumentDNIe(...)`](#signdocumentdnie)
 * [`signHashDNIe(...)`](#signhashdnie)
+* [`isNFCEnable()`](#isnfcenable)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -68,9 +69,9 @@ readPassport(options: { accessKey: String; paceKeyReference: number; tags: Strin
 
 Lee el eID utilizando la conexión NFC.
 
-| Param         | Type                                                                                                | Description                                                                                                                                                                                                                                                                                                                        |
-| ------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`options`** | <code>{ accessKey: <a href="#string">String</a>; paceKeyReference: number; tags: String[]; }</code> | - <a href="#array">Array</a> que incluye los parámetros que se le envían al plugin: accessKey (Indica el can o mrz utilizado para establecer la comunicación), paceKeyReference (indica el tipo de clave usada en la conexión, se puede utilizar CAN o MRZ), tags (indica los dataGroups a leer del documento. [] para leer todos) |
+| Param         | Type                                                                                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`options`** | <code>{ accessKey: <a href="#string">String</a>; paceKeyReference: number; tags: String[]; }</code> | - <a href="#array">Array</a> que incluye los parámetros que se le envían al plugin: accessKey (Indica el can o mrz utilizado para establecer la comunicación), paceKeyReference (indica el tipo de clave usada en la conexión, se puede utilizar CAN o MRZ), tags (indica los dataGroups a leer del documento. [] para leer todos. En android si no se especifica DG2 no se recupera la foto y si no se especifica DG7 no se recupera la firma, el resto de DGs se recuperan siempre) |
 
 **Returns:** <code>Promise&lt;<a href="#respuestareadpassport">RespuestaReadPassport</a>&gt;</code>
 
@@ -124,6 +125,19 @@ Firma el hash pasado como parámetro con el certificado del DNIe pasado como par
 | **`options`** | <code>{ accessKey: <a href="#string">String</a>; pin: <a href="#string">String</a>; hash: Number[]; digest: number; certToUse: <a href="#string">String</a>; }</code> | - <a href="#array">Array</a> que incluye los parámetros que se le envían al plugin: accessKey (Indica el can utilizado para establecer la comunicación), pin (indica pin del DNIe), hash (hash a firmar), digest (digest del algoritmo utilizado para generar el hash. Se indica uno de los valores del tipo DigestType), certToUse (certificado a usar. Se indica uno de los valores del tipo DNIeCertificates) |
 
 **Returns:** <code>Promise&lt;<a href="#respuestafirma">RespuestaFirma</a>&gt;</code>
+
+--------------------
+
+
+### isNFCEnable()
+
+```typescript
+isNFCEnable() => Promise<RespuestaNFC>
+```
+
+Indica si el dispositivo móvil dispone de la tecnología NFC y si esta opción está activada.
+
+**Returns:** <code>Promise&lt;<a href="#respuestanfc">RespuestaNFC</a>&gt;</code>
 
 --------------------
 
@@ -362,5 +376,13 @@ An object that represents a number of any kind. All JavaScript numbers are 64-bi
 | --------- | ------------------------------------------------------------------ |
 | **join**  | (separator?: string \| undefined) =&gt; string                     |
 | **slice** | (start?: number \| undefined, end?: number \| undefined) =&gt; T[] |
+
+
+#### RespuestaNFC
+
+| Prop             | Type                                        |
+| ---------------- | ------------------------------------------- |
+| **`disponible`** | <code><a href="#boolean">Boolean</a></code> |
+| **`activo`**     | <code><a href="#boolean">Boolean</a></code> |
 
 </docgen-api>

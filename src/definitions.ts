@@ -35,6 +35,11 @@ export interface idniecapPlugin {
    */
   signHashDNIe(options: {accessKey: String, pin: String, hash: Array<Number>, digest: number, certToUse: String}) : Promise<RespuestaFirma>;
 
+  /**
+   * Indica si el dispositivo móvil dispone de la tecnología NFC y si esta opción está activada.
+   */
+  isNFCEnable() : Promise<RespuestaNFC>;
+
 }
 
 export const PACEHandler =  { 
@@ -158,10 +163,8 @@ export interface RespuestaFirma {
    error: String | undefined
 }
 
-/*
-export interface RespuestaAutenticacion {
-   respueta: Boolean,
-   error: String | undefined
+export interface RespuestaNFC {
+   disponible: Boolean,
+   activo: Boolean
 }
-*/
  

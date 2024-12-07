@@ -1,5 +1,6 @@
 import Foundation
 import iDNIe
+import CoreNFC
 
 @objc public class idniecap: NSObject {
 
@@ -589,4 +590,22 @@ import iDNIe
 
     }
 
+    @objc public func isNFCEnable() -> [String: Any]  {
+
+        guard NFCNDEFReaderSession.readingAvailable else {
+            var json: [String: Any] = [:]
+            json["disponible"] = false
+            json["activo"] = false
+
+            return json
+        }
+
+
+        var json: [String: Any] = [:]
+        json["disponible"] = true
+        json["activo"] = true
+
+        return json
+
+    }
 }

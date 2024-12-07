@@ -1,6 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { EstadoLicencia, idniecapPlugin, MRZKey, RespuestaFirma, RespuestaReadPassport } from './definitions';
+import type { EstadoLicencia, idniecapPlugin, MRZKey, RespuestaFirma, RespuestaNFC, RespuestaReadPassport } from './definitions';
 
 export class idniecapWeb extends WebPlugin implements idniecapPlugin {
   getMRZKey(options: {passportNumber: String, dateOfBirth: String, dateOfExpiry: String}): Promise<MRZKey> {
@@ -38,18 +38,8 @@ export class idniecapWeb extends WebPlugin implements idniecapPlugin {
     console.log(options);
     throw new Error('Method not implemented.');
   }
- /*
-  async authenticationDNIeOpenSession(options: {accessKey: String, pin: String}) : Promise<RespuestaAutenticacion>
-  {
-    console.log("NOT IMPLEMENTED");
-    console.log(options);
-    throw new Error('Method not implemented.');
-  }
 
-  async signChallengeDNIe(options: {hash: Array<Number>, digest: Number, signPadding: String}) : Promise<RespuestaAutenticacion>{
-    console.log("NOT IMPLEMENTED");
-    console.log(options);
+  async isNFCEnable(): Promise<RespuestaNFC> {
     throw new Error('Method not implemented.');
   }
- */   
 }

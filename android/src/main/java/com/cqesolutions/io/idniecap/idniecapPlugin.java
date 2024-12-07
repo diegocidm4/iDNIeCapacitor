@@ -1,8 +1,11 @@
 package com.cqesolutions.io.idniecap;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcManager;
 import android.util.Base64;
 
 import androidx.activity.result.ActivityResult;
@@ -359,6 +362,39 @@ public class idniecapPlugin extends Plugin {
         JSObject ret = new JSObject();
         ret.put("firma",firma);
         ret.put("error", errorText);
+        call.resolve(ret);
+
+    }
+
+    @PluginMethod
+    public void isNFCEnable(PluginCall call){
+		Boolean disponible = true;
+        Boolean activo = true;
+
+        NfcManager manager = (NfcManager) getActivity().getApplicationContext().getSystemService(Context.NFC_SERVICE);
+		NfcAdapter adapter = manager.getDefaultAdapter();
+
+		if(adapter==null) {
+			try{
+                disponible = false;
+			}
+			catch (IllegalStateException ignored) {
+				// There's no way to avoid getting this if saveInstanceState has already been called.
+			}
+		}
+		else if (!adapter.isEnabled()) {
+			try{
+                activo = false;
+			}
+			catch (IllegalStateException ignored) {
+				// There's no way to avoid getting this if saveInstanceState has already been called.
+			}
+		}
+
+
+        JSObject ret = new JSObject();
+        ret.put("disponible",disponible);
+        ret.put("activo", activo);
         call.resolve(ret);
 
     }

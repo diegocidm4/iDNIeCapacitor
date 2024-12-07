@@ -16,8 +16,7 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "signTextDNIe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "signDocumentDNIe", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "signHashDNIe", returnType: CAPPluginReturnPromise),
-//        CAPPluginMethod(name: "authenticationDNIeOpenSession", returnType: CAPPluginReturnPromise),
-//        CAPPluginMethod(name: "signChallengeDNIe", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "isNFCEnable", returnType: CAPPluginReturnPromise),
     ]
     private let implementation = idniecap()
     
@@ -89,6 +88,12 @@ public class idniecapPlugin: CAPPlugin, CAPBridgedPlugin {
         let certToUse = call.getString("certToUse") ?? ""
             
         let json = implementation.signHashDNIe(accessKey, pin, hash as! [UInt8], digest, certToUse)
+        
+        call.resolve(json)
+    }
+
+    @objc func isNFCEnable(_ call: CAPPluginCall) {
+        let json = implementation.isNFCEnable()
         
         call.resolve(json)
     }
