@@ -125,6 +125,10 @@ import CoreNFC
                     datosDNIe = DNIeUtils.obtenerTodosDatosDNIe(dnie: passport)
                     self.datosDNIe = datosDNIe
                     self.passportSelected = datosDNIe?.getPassport()
+                    if(paceReference == PACEHandler.CAN_PACE_KEY_REFERENCE)
+                    {
+                        self.datosDNIe?.setCan(can: accessKey)
+                    }
                 } else {
                     errorText = error?.localizedDescription
                     print("[NFC] - Error\(error?.localizedDescription)")
@@ -137,8 +141,10 @@ import CoreNFC
                 
             }
             
+            
+            
             if(datosDNIe != nil)
-            {
+            {                
                 var base64Foto = ""
                 if(datosDNIe?.getImagen() != nil)
                 {
@@ -408,6 +414,10 @@ import CoreNFC
                 jsonDatosDNIe?["erroresVerificacion"] = jsonErrores
             }
         }
+        
+        
+        print(datosDNIe?.getCan());
+        print(datosDNIe?.getnumSoporte());
         
         var json: [String: Any] = [:]
         json["datosDNIe"] = jsonDatosDNIe
