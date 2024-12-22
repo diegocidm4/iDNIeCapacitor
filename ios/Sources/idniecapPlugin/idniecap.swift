@@ -416,9 +416,6 @@ import CoreNFC
         }
         
         
-        print(datosDNIe?.getCan());
-        print(datosDNIe?.getnumSoporte());
-        
         var json: [String: Any] = [:]
         json["datosDNIe"] = jsonDatosDNIe
         json["error"] = errorText

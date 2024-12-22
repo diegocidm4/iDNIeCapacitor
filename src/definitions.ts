@@ -74,12 +74,6 @@ export const PACEHandler =  {
    AUTENTICACION: 'AUTENTICACION',
    FIRMA: 'FIRMA'
  }
-/*
- export const DNIeSingPadding =  {
-   PKCS: 'PKCS',
-   PSS: 'PSS'
- }
-*/
  export const DigestType =  { 
    SHA1: 1,
    SHA224: 224,

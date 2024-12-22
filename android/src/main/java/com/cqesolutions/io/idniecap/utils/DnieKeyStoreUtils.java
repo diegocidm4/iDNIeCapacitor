@@ -62,6 +62,7 @@ public class DnieKeyStoreUtils {
                 datosDNIe.setDireccion(m_dg13.getActualAddress());
                 datosDNIe.setProvinciaActual(m_dg13.getActualProvince());
                 datosDNIe.setMunicipioActual(m_dg13.getActualPopulation());
+                datosDNIe.setNumSoporte(m_dg1.getDocNumber());
             }
 
             if(foto)
