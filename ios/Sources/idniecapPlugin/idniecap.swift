@@ -106,7 +106,6 @@ import CoreNFC
         
         let passportUtils = PassportUtils()
         passportReader?.passiveAuthenticationUsesOpenSSL = true
-
         var lecturaCompleta = false;
 
         var datosDNIe: DatosDNIe? = nil
@@ -136,9 +135,10 @@ import CoreNFC
                 lecturaCompleta = true
             })
             
+            var txt = ""
             while(!lecturaCompleta)
             {
-                
+                txt = txt + "-"
             }
             
             
@@ -461,10 +461,11 @@ import CoreNFC
             })
         }
         
-         while(!lecturaCompleta)
-         {
-             
-         }
+        var txt = ""
+        while(!lecturaCompleta)
+        {
+            txt = txt + "-"
+        }
 
         var json: [String: Any] = [:]
         json["firma"] = firma
@@ -508,10 +509,12 @@ import CoreNFC
                 lecturaCompleta = true
             })
         }
-         while(!lecturaCompleta)
-         {
-             
-         }
+
+        var txt = ""
+        while(!lecturaCompleta)
+        {
+            txt = txt + "-"
+        }
 
         var json: [String: Any] = [:]
         json["firma"] = firma
@@ -584,10 +587,12 @@ import CoreNFC
             })
             
         }
-         while(!lecturaCompleta)
-         {
-             
-         }
+
+        var txt = ""
+        while(!lecturaCompleta)
+        {
+            txt = txt + "-"
+        }
 
         var json: [String: Any] = [:]
         json["firma"] = firma
