@@ -48,21 +48,23 @@ public class DnieKeyStoreUtils {
     //            String nif = m_dg11.getPersonalNumber();
     //            datosDNIe.setNif(nif.replaceAll("-", ""));
 
-                DG13 m_dg13 = dnieKeyStore.getDataGroup13();
-                datosDNIe.setMunicipioNacimiento(m_dg13.getBirthPopulation());
-                datosDNIe.setProvinciaNacimiento(m_dg13.getBirthProvince());
-                datosDNIe.setApellido1(m_dg13.getSurName1());
-                datosDNIe.setApellido2(m_dg13.getSurName2());
-                datosDNIe.setNombrePadre(m_dg13.getFatherName());
-                datosDNIe.setNombreMadre(m_dg13.getMotherName());
-                datosDNIe.setFechaValidez(m_dg13.getExpirationDate().replaceAll(" ","/"));
-                datosDNIe.setEmisor(m_dg1.getIssuer());
-                datosDNIe.setNacionalidad(m_dg1.getNationality());
-                datosDNIe.setSexo(m_dg1.getSex());
-                datosDNIe.setDireccion(m_dg13.getActualAddress());
-                datosDNIe.setProvinciaActual(m_dg13.getActualProvince());
-                datosDNIe.setMunicipioActual(m_dg13.getActualPopulation());
-                datosDNIe.setNumSoporte(m_dg1.getDocNumber());
+                if(dnieKeyStore.getDataGroup13() != null) {
+                    DG13 m_dg13 = dnieKeyStore.getDataGroup13();
+                    datosDNIe.setMunicipioNacimiento(m_dg13.getBirthPopulation());
+                    datosDNIe.setProvinciaNacimiento(m_dg13.getBirthProvince());
+                    datosDNIe.setApellido1(m_dg13.getSurName1());
+                    datosDNIe.setApellido2(m_dg13.getSurName2());
+                    datosDNIe.setNombrePadre(m_dg13.getFatherName());
+                    datosDNIe.setNombreMadre(m_dg13.getMotherName());
+                    datosDNIe.setFechaValidez(m_dg13.getExpirationDate().replaceAll(" ", "/"));
+                    datosDNIe.setEmisor(m_dg1.getIssuer());
+                    datosDNIe.setNacionalidad(m_dg1.getNationality());
+                    datosDNIe.setSexo(m_dg1.getSex());
+                    datosDNIe.setDireccion(m_dg13.getActualAddress());
+                    datosDNIe.setProvinciaActual(m_dg13.getActualProvince());
+                    datosDNIe.setMunicipioActual(m_dg13.getActualPopulation());
+                    datosDNIe.setNumSoporte(m_dg1.getDocNumber());
+                }
             }
 
             if(foto)
