@@ -6,6 +6,9 @@
             android:name=".activities.ConsultaPasaporte"
             android:exported="false" />
         <activity
+            android:name=".activities.ConsultaPasaporteCAN"
+            android:exported="false" />
+        <activity
             android:name=".activities.FirmaDNIe"
             android:exported="false" />
         <activity

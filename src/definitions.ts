@@ -15,7 +15,7 @@ export interface idniecapPlugin {
    * Lee el eID utilizando la conexión NFC.
    * @param options - Array que incluye los parámetros que se le envían al plugin: accessKey (Indica el can o mrz utilizado para establecer la comunicación), paceKeyReference (indica el tipo de clave usada en la conexión, se puede utilizar CAN o MRZ), tags (indica los dataGroups a leer del documento. [] para leer todos. En android si no se especifica DG2 no se recupera la foto y si no se especifica DG7 no se recupera la firma, el resto de DGs se recuperan siempre)
    */
-  readPassport(options: {accessKey: String, paceKeyReference: number, tags: String[]}) : Promise<RespuestaReadPassport>;
+  readPassport(options: {accessKey: String, paceKeyReference: number, tags: String[], esDNIe: boolean}) : Promise<RespuestaReadPassport>;
 
   /**
    * Firma un texto con el certificado del DNIe pasado como parámetro.

@@ -14,7 +14,7 @@ export class idniecapWeb extends WebPlugin implements idniecapPlugin {
     console.log(options);
     throw new Error('Method not implemented.');
   }
-  async readPassport(options: {accessKey: String, paceKeyReference: number, tags: String[]}): Promise<RespuestaReadPassport> {
+  async readPassport(options: {accessKey: String, paceKeyReference: number, tags: String[], esDNIe: boolean}): Promise<RespuestaReadPassport> {
     console.log("NOT IMPLEMENTED");
     console.log(options);
     throw new Error('Method not implemented.');

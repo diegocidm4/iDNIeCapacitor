@@ -81,6 +81,7 @@ public class idniecapPlugin extends Plugin {
         String accessKey = call.getString("accessKey");
         int paceKeyReference = call.getInt("paceKeyReference");
         JSArray jtags = call.getArray("tags");
+        boolean esDNIe = call.getBoolean("esDNIe");
 
         String[] tags = new String[jtags.length()];
         try {
@@ -99,7 +100,7 @@ public class idniecapPlugin extends Plugin {
         certificadoCA = null;
         integridadDocumento = true;
 
-        boolean esperaRespuesta = implementation.readPassport(accessKey, paceKeyReference, tags, this, call);
+        boolean esperaRespuesta = implementation.readPassport(accessKey, paceKeyReference, tags, esDNIe,this, call);
 
         if(!esperaRespuesta)
         {
@@ -194,7 +195,8 @@ public class idniecapPlugin extends Plugin {
             jsonDatosDNIe.put("municipioNacimiento", datosDNIe.getMunicipioNacimiento());
             jsonDatosDNIe.put("nombrePadre", datosDNIe.getNombrePadre());
             jsonDatosDNIe.put("nombreMadre", datosDNIe.getNombreMadre());
-            jsonDatosDNIe.put("fechaValidez", datosDNIe.getFechaValidez());
+            //jsonDatosDNIe.put("fechaValidez", datosDNIe.getFechaValidez());
+            jsonDatosDNIe.put("fechaValidez", DateUtils.formateaFechaDNIe(datosDNIe.getFechaValidez(), "dd/MM/yyyy", getActivity().getApplicationContext()));
             jsonDatosDNIe.put("emisor", datosDNIe.getEmisor());
             jsonDatosDNIe.put("nacionalidad", datosDNIe.getNacionalidad());
             jsonDatosDNIe.put("sexo", datosDNIe.getSexo());

@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import com.cqesolutions.io.idniecap.activities.ConsultaDNIe;
 import com.cqesolutions.io.idniecap.activities.ConsultaPasaporte;
+import com.cqesolutions.io.idniecap.activities.ConsultaPasaporteCAN;
 import com.cqesolutions.io.idniecap.activities.FirmaDNIe;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
@@ -26,7 +27,7 @@ public class idniecap {
         return passportNumber+"#"+dateOfBirth+"#"+dateOfExpiry;
     }
 
-    public boolean readPassport(String accessKey, int paceKeyReference, String[] tags, Plugin plugin, PluginCall call){
+    public boolean readPassport(String accessKey, int paceKeyReference, String[] tags, boolean esDNIe, Plugin plugin, PluginCall call){
         boolean recuperaFoto = false;
         boolean recuperaFirma = false;
         if(tags.length==0)
@@ -66,6 +67,11 @@ public class idniecap {
             case 2:
                 //Open activity to read DNIe
                 Intent intent = new Intent(plugin.getActivity(), ConsultaDNIe.class);
+                if(!esDNIe)
+                {
+                    intent = new Intent(plugin.getActivity(), ConsultaPasaporteCAN.class);
+                }
+
                 intent.putExtra("CAN", accessKey);
                 intent.putExtra("recuperaFoto", recuperaFoto);
                 intent.putExtra("recuperaFirma", recuperaFirma);
