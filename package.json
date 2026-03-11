@@ -1,6 +1,6 @@
 {
   "name": "idniecap",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Librería para el uso del DNIe en ionic. Disponible para android e iOS.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -59,12 +59,12 @@
     "eslint": "^8.57.0",
     "prettier": "^3.3.3",
     "prettier-plugin-java": "^2.6.4",
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.2",
     "rollup": "^4.24.0",
     "swiftlint": "^2.0.0",
     "typescript": "~4.1.5"
   },
-  "peerDependencies": {    
+  "peerDependencies": {
     "@capacitor/core": ">=6.0.0 <8.0.0"
   },
   "prettier": "@ionic/prettier-config",
