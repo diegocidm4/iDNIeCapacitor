@@ -10,7 +10,7 @@ let package = Package(
             targets: ["idniecapPlugin"])
     ],
     dependencies: [
-        .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", branch: "main"),
+        .package(url: "https://github.com/ionic-team/capacitor-swift-pm.git", "7.0.0"..<"9.0.0"),
         .package(url: "https://github.com/diegocidm4/iDNIe.git", branch: "main"),
         .package(url: "https://github.com/krzyzanowskim/OpenSSL.git", exact: "1.1.2301"),
 
